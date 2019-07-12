@@ -86,7 +86,8 @@ export default class SidebarMenu extends React.Component {
       return flag;
     }
 
-    const { sidebar, currentSection, currentFile, onSectionSelect, onFileSelect, getLinkHref } = this.props
+    const { sidebar, currentSection, currentFile, onSectionSelect, getLinkHref } = this.props;
+
     return !this.state.loading ? (
       <Menu id="sidebar-menu">
         <Sections>
@@ -111,7 +112,7 @@ export default class SidebarMenu extends React.Component {
                         const subgroup = file.files ? file.files : null;
                         let compare = file.folder && file.indexFile ? file.folder + '/' + file.indexFile : section.folder + '/' + file;
                         const isFileActive = currentFile === compare;
-                        let FileOrSubsectionTitle = file.name
+                        let FileOrSubsectionTitle = file.name //переменная не используется
                           ? file.name
                           : this.getName(section.labels, section.files, file.folder ? file.folder : section.folder, file.indexFile ? file.indexFile : file)//Очень перегруженная конструкция
                         return (
