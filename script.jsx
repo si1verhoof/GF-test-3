@@ -9,7 +9,7 @@ import Preloader from '../../Preloader/Preloader';
 
 export default class SidebarMenu extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       names: [],
       loading: true
@@ -30,16 +30,17 @@ export default class SidebarMenu extends React.Component {
     let arr = {}; //несодержательное имя переменной
     let self = this;
 
-    sidebar.map(section => {
-      section.files.map(file => {
+    sidebar.forEach(section => {
+      section.files.forEach(file => {
         let folder = file.folder ? file.folder : section.folder;
         let filename = (typeof file === 'string') ? file : file.indexFile;
-        arr[folder + '/' + filename] = startCase(filename.slice(0, -3));
+        arr[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
+
         if (file.files && file.files.length > 0) {
-          file.files.map(file2 => { //Возможно, метод map необходимо заменить на forEach
+          file.files.forEach(file2 => {
             let folder = file.folder ? file.folder : section.folder;
             let filename = file2;
-            arr[folder + '/' + filename] = startCase(filename.slice(0, -3));
+            arr[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
           })
         }
       })
@@ -61,13 +62,13 @@ export default class SidebarMenu extends React.Component {
     if (labels && labels[indexFile]) {
       name = labels[indexFile];
     } else {
-      name = this.state.names[folder + '/' + indexFile];
+      name = this.state.names[`${folder}/${indexFile}`];
     }
     return name;
   }
 
   componentWillReceiveProps(nextProps) {
-    let con1 = nextProps.currentFile !== this.props.currentFile; //Несодержательное имя переменной -> понять, что делают эти строка кода и переименовать (изучить пропсы)
+    let con1 = nextProps.currentFile !== this.props.currentFile; //Несодержательное имя переменной -> понять, что делают эти строки кода и переименовать (изучить пропсы)
     let con2 = nextProps.currentSection !== this.props.currentSection;
     if (con1 || con2) {
       this.collapse();
@@ -79,7 +80,7 @@ export default class SidebarMenu extends React.Component {
     function includes(array, folder) {
       let flag = false;
       array.forEach(elem => {
-        if (folder + '/' + elem === self.props.currentFile) {
+        if (`${folder}/${elem}` === self.props.currentFile) {
           flag = true;
         }
       })
@@ -92,9 +93,11 @@ export default class SidebarMenu extends React.Component {
       <Menu id="sidebar-menu">
         <Sections>
           <SectionLinks>
-            {sidebar.map((section, index) => {
+            {sidebar.forEach((section, index) => {
               const isSectionActive = currentSection === index;
-              let sectionTitle = section.name ? section.name : this.getName(section.labels, section.files, section.folder, section.indexFile); //Перегруженная конструкция
+              let sectionTitle = section.name
+                ? section.name
+                : this.getName(section.labels, section.files, section.folder, section.indexFile);
               return (
                 <div key={index}>
                   <SectionLink
@@ -108,19 +111,27 @@ export default class SidebarMenu extends React.Component {
                   </SectionLink>
                   <Collapse data-open={isSectionActive ? 'true' : 'false'}>
                     {section.files &&
-                      section.files.map((file, fileIndex) => {
+                      section.files.forEach((file, fileIndex) => {
                         const subgroup = file.files ? file.files : null;
-                        let compare = file.folder && file.indexFile ? file.folder + '/' + file.indexFile : section.folder + '/' + file;
+                        let compare = file.folder && file.indexFile ? `${file.folder}/${file.indexFile}` : `${ection.folder}/${file}`;
                         const isFileActive = currentFile === compare;
                         let FileOrSubsectionTitle = file.name //переменная не используется
                           ? file.name
-                          : this.getName(section.labels, section.files, file.folder ? file.folder : section.folder, file.indexFile ? file.indexFile : file)//Очень перегруженная конструкция
+                          : this.getName(section.labels, section.files, file.folder
+                            ? file.folder
+                            : section.folder, file.indexFile
+                              ? file.indexFile
+                              : file)
                         return (
                           <Fragment key={`file-${fileIndex}`}>
                             {subgroup && (
                               <Collapse
                                 data-flag={'first'}
-                                data-open={isFileActive || includes(subgroup, file.folder ? file.folder : section.folder) ? 'true' : 'false'}
+                                data-open={isFileActive || includes(subgroup, file.folder
+                                  ? file.folder
+                                  : section.folder)
+                                    ? 'true'
+                                    : 'false'}
                               >
                                 <!-- render subrgoup (в рамках тестового задания рендеринг подгруппы реализовывать не нужно) -->
                               </Collapse>
