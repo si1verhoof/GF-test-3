@@ -97,7 +97,7 @@ export default class SidebarMenu extends React.Component {
               const isSectionActive = currentSection === index;
               let sectionTitle = section.name
                 ? section.name
-                : this.getName(section.labels, section.files, section.folder, section.indexFile);
+                : this.getName(section.labels, section.files, section.folder, section.indexFile); //При вызове этой функции передается только 3 аргумента, разобраться, почему в вызове 4
               return (
                 <div key={index}>
                   <SectionLink
@@ -113,11 +113,13 @@ export default class SidebarMenu extends React.Component {
                     {section.files &&
                       section.files.forEach((file, fileIndex) => {
                         const subgroup = file.files ? file.files : null;
-                        let compare = file.folder && file.indexFile ? `${file.folder}/${file.indexFile}` : `${ection.folder}/${file}`;
+                        let compare = file.folder && file.indexFile
+                          ? `${file.folder}/${file.indexFile}`
+                          : `${ection.folder}/${file}`;
                         const isFileActive = currentFile === compare;
                         let FileOrSubsectionTitle = file.name //переменная не используется
                           ? file.name
-                          : this.getName(section.labels, section.files, file.folder
+                          : this.getName(section.labels, section.files, file.folder //Необходимо разобраться с именованием парамтеров функции, т.к. имена при вызове функции и имена передаваемые в функцию отличаются
                             ? file.folder
                             : section.folder, file.indexFile
                               ? file.indexFile
