@@ -67,10 +67,10 @@ export default class SidebarMenu extends React.Component {
     return name;
   }
 
-  componentWillReceiveProps(nextProps) {
-    let con1 = nextProps.currentFile !== this.props.currentFile; //Несодержательное имя переменной -> понять, что делают эти строки кода и переименовать (изучить пропсы)
-    let con2 = nextProps.currentSection !== this.props.currentSection;
-    if (con1 || con2) {
+  UNSAFE_componentWillReceiveProps(nextProps) { //В спеке реакта говорится, что этот метод устарел
+    let cnangedPropsFile = nextProps.currentFile !== this.props.currentFile; 
+    let cnangedPropsSection = nextProps.currentSection !== this.props.currentSection;
+    if (cnangedPropsFile || cnangedPropsSection) {
       this.collapse();
     }
   }
@@ -97,7 +97,7 @@ export default class SidebarMenu extends React.Component {
               const isSectionActive = currentSection === index;
               let sectionTitle = section.name
                 ? section.name
-                : this.getName(section.labels, section.files, section.folder, section.indexFile); //При вызове этой функции передается только 3 аргумента, разобраться, почему в вызове 4
+                : this.getName(section.labels, section.folder, section.indexFile);
               return (
                 <div key={index}>
                   <SectionLink
@@ -117,13 +117,6 @@ export default class SidebarMenu extends React.Component {
                           ? `${file.folder}/${file.indexFile}`
                           : `${ection.folder}/${file}`;
                         const isFileActive = currentFile === compare;
-                        let FileOrSubsectionTitle = file.name //переменная не используется
-                          ? file.name
-                          : this.getName(section.labels, section.files, file.folder //Необходимо разобраться с именованием парамтеров функции, т.к. имена при вызове функции и имена передаваемые в функцию отличаются
-                            ? file.folder
-                            : section.folder, file.indexFile
-                              ? file.indexFile
-                              : file)
                         return (
                           <Fragment key={`file-${fileIndex}`}>
                             {subgroup && (
