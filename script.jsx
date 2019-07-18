@@ -45,7 +45,7 @@ export default class SidebarMenu extends React.Component {
         }
       })
     })
-    
+
     self.setState({
       names: arr,
       loading: false
@@ -68,7 +68,7 @@ export default class SidebarMenu extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) { //В спеке реакта говорится, что этот метод устарел
-    let cnangedPropsFile = nextProps.currentFile !== this.props.currentFile; 
+    let cnangedPropsFile = nextProps.currentFile !== this.props.currentFile;
     let cnangedPropsSection = nextProps.currentSection !== this.props.currentSection;
     if (cnangedPropsFile || cnangedPropsSection) {
       this.collapse();
@@ -86,11 +86,10 @@ export default class SidebarMenu extends React.Component {
       })
       return flag;
     }
-
     const { sidebar, currentSection, currentFile, onSectionSelect, getLinkHref } = this.props;
 
     return !this.state.loading ? (
-      <Menu id="sidebar-menu">
+      <Menu id='sidebar-menu'>
         <Sections>
           <SectionLinks>
             {sidebar.forEach((section, index) => {
@@ -100,41 +99,8 @@ export default class SidebarMenu extends React.Component {
                 : this.getName(section.labels, section.folder, section.indexFile);
               return (
                 <div key={index}>
-                  <SectionLink
-                    level={1}
-                    href={getLinkHref(index)}
-                    onClick={e => onSectionSelect(e, index)}
-                    className={isSectionActive ? 'docSearch-lvl0' : ''}
-                    isActive={isSectionActive}
-                  >
-                    {sectionTitle}
-                  </SectionLink>
-                  <Collapse data-open={isSectionActive ? 'true' : 'false'}>
-                    {section.files &&
-                      section.files.forEach((file, fileIndex) => {
-                        const subgroup = file.files ? file.files : null;
-                        let compare = file.folder && file.indexFile
-                          ? `${file.folder}/${file.indexFile}`
-                          : `${ection.folder}/${file}`;
-                        const isFileActive = currentFile === compare;
-                        return (
-                          <Fragment key={`file-${fileIndex}`}>
-                            {subgroup && (
-                              <Collapse
-                                data-flag={'first'}
-                                data-open={isFileActive || includes(subgroup, file.folder
-                                  ? file.folder
-                                  : section.folder)
-                                    ? 'true'
-                                    : 'false'}
-                              >
-                                <!-- render subrgoup (в рамках тестового задания рендеринг подгруппы реализовывать не нужно) -->
-                              </Collapse>
-                            )}
-                          </Fragment>
-                        )
-                      })}
-                  </Collapse>
+                  <SectionLink />
+                  <SectionToggler />
                 </div>
               )
             })}
@@ -147,7 +113,7 @@ export default class SidebarMenu extends React.Component {
         </OnlyDesktop>
       </Menu>
     ) : (
-        <Menu id="sidebar-menu">
+        <Menu id='sidebar-menu'>
           <div
             style={{
               display: 'flex',
@@ -163,6 +129,67 @@ export default class SidebarMenu extends React.Component {
       )
   }
 }
+
+// Компоненты
+
+// При извлечении компонентов и последующем расположении сохранил иерархию от самого 'глубокого' к 'внешнему'
+function SubgroupToggler() {
+  return (
+    <div className='SubgroupToggler'
+      data-flag='first'
+      data-open={isFileActive || includes(subgroup, file.folder
+        ? file.folder
+        : section.folder)
+        ? 'true'
+        : 'false'}
+    >
+    </div>
+  )
+  //<!-- render subrgoup (в рамках тестового задания рендеринг подгруппы реализовывать не нужно) -->
+}
+
+function Indexer() {
+  return (
+    <div className='Indexer' key={`file-${fileIndex}`}>
+      {subgroup && (
+        <SubgroupToggler />
+      )}
+    </div>
+  )
+}
+
+function SectionToggler() {
+  return (
+    <div classNsme="SectionToggler" data-open={isSectionActive ? 'true' : 'false'}>
+      {section.files &&
+        section.files.forEach((file, fileIndex) => {
+          const subgroup = file.files ? file.files : null;
+          let compare = file.folder && file.indexFile
+            ? `${file.folder}/${file.indexFile}`
+            : `${section.folder}/${file}`;
+          const isFileActive = currentFile === compare;
+          return (
+            <Indexer />
+          )
+        })}
+    </div>
+  )
+}
+
+function SectionLink() {
+  return (
+    <div classname="SectionLink"
+      level={1}
+      href={getLinkHref(index)}
+      onClick={e => onSectionSelect(e, index)}
+      className={isSectionActive ? 'docSearch-lvl0' : ''}
+      isActive={isSectionActive}
+    >
+      {sectionTitle}
+    </div>
+  )
+}
+
 const Menu = styled.div`
   position: sticky;
   top: 60px;
@@ -207,7 +234,10 @@ const SectionLink = styled.a`
     color: #40364d;
 	`};
 `
-const Collapse = styled.div`
+const SubgroupToggler = styled.div` //уточнить поведение css in js
+  display: none;
+`
+const SectionToggler = styled.div` //уточнить поведение css in js
   display: none;
 `
 const SideFooter = styled.div`
