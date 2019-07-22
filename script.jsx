@@ -133,7 +133,7 @@ export default class SidebarMenu extends React.Component {
 // Компоненты
 
 // При извлечении компонентов и последующем расположении сохранил иерархию от самого 'глубокого' к 'внешнему'
-function SubgroupToggler() {
+function SubgroupToggler(props) { //Не уверен, что пропсы нужно передать во все компоненты, НО в документации подобное практикуется даже в примерах, где явно не используются переменные
   return (
     <div className='SubgroupToggler'
       data-flag='first'
@@ -148,7 +148,7 @@ function SubgroupToggler() {
   //<!-- render subrgoup (в рамках тестового задания рендеринг подгруппы реализовывать не нужно) -->
 }
 
-function Indexer() {
+function Indexer(props) {
   return (
     <div className='Indexer' key={`file-${fileIndex}`}>
       {subgroup && (
@@ -158,7 +158,7 @@ function Indexer() {
   )
 }
 
-function SectionToggler() {
+function SectionToggler(props) {
   return (
     <div classNsme="SectionToggler" data-open={isSectionActive ? 'true' : 'false'}>
       {section.files &&
@@ -176,7 +176,7 @@ function SectionToggler() {
   )
 }
 
-function SectionLink() {
+function SectionLink(props) {
   return (
     <div classname="SectionLink"
       level={1}
