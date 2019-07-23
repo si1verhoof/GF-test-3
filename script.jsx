@@ -11,15 +11,12 @@ export default class SidebarMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      names: [],
+      names: {},
       loading: true
     }
-
-    this.collapse = this.collapse.bind(this);
-    this.getName = this.getName.bind(this);
   }
 
-  collapse() {
+  collapse = () => {
     setTimeout(function () {
       $('[data-open=true]').slideDown();
       $('[data-open=false]').slideUp();
@@ -27,29 +24,36 @@ export default class SidebarMenu extends React.Component {
   }
 
   getNamesArr() {
-    let arr = {}; //несодержательное имя переменной
-    let self = this;
+    const namesDict = {}; //изменено и let тк в ходе выполнения метода не меняется ссылка на объект, только его свойства
 
     sidebar.forEach(section => {
       section.files.forEach(file => {
-        let folder = file.folder ? file.folder : section.folder;
-        let filename = (typeof file === 'string') ? file : file.indexFile;
-        arr[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
+        const folder = file.folder
+          ? file.folder
+          : section.folder;
+
+        const filename = typeof file === string
+          ? file
+          : file.indexFile;
+
+        addName(folder, fileName);
 
         if (file.files && file.files.length > 0) {
-          file.files.forEach(file2 => {
-            let folder = file.folder ? file.folder : section.folder;
-            let filename = file2;
-            arr[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
-          })
+          file.files.forEach(subFilename => {
+            addName(folder, subFilename);
+          });
         }
-      })
-    })
+      });
+    });
 
-    self.setState({
-      names: arr,
-      loading: false
-    })
+    this.setState({
+      names: namesDict,
+      loading: false,
+    });
+
+    function addName(folder, filename) {
+      names[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
+    }
   }
 
   componentDidMount() {
@@ -57,12 +61,12 @@ export default class SidebarMenu extends React.Component {
     this.getNamesArr();
   }
 
-  getName(labels = null, folder = null, indexFile = null) {
+  getName = (labels = null, folder = null, indexFile = null) => { //переписал на стрелке, но в данном конкретном случае нет обработчика событий, необходимость данной правки под вопросом
     let name;
     if (labels && labels[indexFile]) {
       name = labels[indexFile];
     } else {
-      name = this.state.names[`${folder}/${indexFile}`];
+      name = this.setState.names[`${folder}/${indexFile}`];
     }
     return name;
   }
@@ -99,7 +103,7 @@ export default class SidebarMenu extends React.Component {
                 : this.getName(section.labels, section.folder, section.indexFile);
               return (
                 <div key={index}>
-                  <SectionLink />
+                  <sectionLink />
                   <SectionToggler />
                 </div>
               )
