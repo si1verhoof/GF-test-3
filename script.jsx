@@ -24,7 +24,7 @@ export default class SidebarMenu extends React.Component {
   }
 
   getNamesArr() {
-    const namesDict = {}; //изменено и let тк в ходе выполнения метода не меняется ссылка на объект, только его свойства
+    const names = {}; //изменено и let тк в ходе выполнения метода не меняется ссылка на объект, только его свойства
 
     sidebar.forEach(section => {
       section.files.forEach(file => {
@@ -32,7 +32,7 @@ export default class SidebarMenu extends React.Component {
           ? file.folder
           : section.folder;
 
-        const filename = typeof file === string
+        const filename = (typeof file === string)
           ? file
           : file.indexFile;
 
@@ -46,14 +46,14 @@ export default class SidebarMenu extends React.Component {
       });
     });
 
-    this.setState({
-      names: namesDict,
-      loading: false,
-    });
-
     function addName(folder, filename) {
       names[`${folder}/${filename}`] = startCase(filename.slice(0, -3));
     }
+
+    this.setState({
+      names,
+      loading: false,
+    });
   }
 
   componentDidMount() {
@@ -61,12 +61,12 @@ export default class SidebarMenu extends React.Component {
     this.getNamesArr();
   }
 
-  getName = (labels = null, folder = null, indexFile = null) => { //переписал на стрелке, но в данном конкретном случае нет обработчика событий, необходимость данной правки под вопросом
+  getName = (labels = null, folder = null, indexFile = null) => {
     let name;
     if (labels && labels[indexFile]) {
       name = labels[indexFile];
     } else {
-      name = this.setState.names[`${folder}/${indexFile}`];
+      name = names[`${folder}/${indexFile}`];
     }
     return name;
   }
