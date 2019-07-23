@@ -103,7 +103,7 @@ export default class SidebarMenu extends React.Component {
                 : this.getName(section.labels, section.folder, section.indexFile);
               return (
                 <div key={index}>
-                  <sectionLink />
+                  <GetLink />
                   <SectionToggler />
                 </div>
               )
@@ -180,9 +180,9 @@ function SectionToggler(props) {
   )
 }
 
-function SectionLink(props) {
+function GetLink(props) {
   return (
-    <div classname="SectionLink"
+    <a classname="GetLink"
       level={1}
       href={getLinkHref(index)}
       onClick={e => onSectionSelect(e, index)}
@@ -190,7 +190,7 @@ function SectionLink(props) {
       isActive={isSectionActive}
     >
       {sectionTitle}
-    </div>
+    </a>
   )
 }
 
@@ -211,7 +211,7 @@ const SectionLinks = styled.div`
     position: relative;
   }
 `
-const SectionLink = styled.a`
+const GetLink = styled.a`
   display: block;
   position: relative;
   font-size: 18px;
