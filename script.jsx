@@ -32,11 +32,11 @@ export default class SidebarMenu extends React.Component {
           ? file.folder
           : section.folder;
 
-        const filename = (typeof file === string)
+        const filename = (typeof file === "string")
           ? file
           : file.indexFile;
 
-        addName(folder, fileName);
+        addName(folder, filename);
 
         if (file.files && file.files.length > 0) {
           file.files.forEach(subFilename => {
@@ -96,7 +96,7 @@ export default class SidebarMenu extends React.Component {
       <Menu id='sidebar-menu'>
         <Sections>
           <SectionLinks>
-            {sidebar.forEach((section, index) => {
+            {sidebar.map((section, index) => {
               const isSectionActive = currentSection === index;
               let sectionTitle = section.name
                 ? section.name
@@ -141,7 +141,7 @@ function SubgroupToggler(props) { //Не уверен, что пропсы ну�
   return (
     <div className='SubgroupToggler'
       data-flag='first'
-      data-open={isFileActive || includes(subgroup, file.folder
+      data-open={props.isFileActive || props.includes(subgroup, file.folder
         ? file.folder
         : section.folder)
         ? 'true'
@@ -154,8 +154,8 @@ function SubgroupToggler(props) { //Не уверен, что пропсы ну�
 
 function Indexer(props) {
   return (
-    <div className='Indexer' key={`file-${fileIndex}`}>
-      {subgroup && (
+    <div className='Indexer'>
+      {props.subgroup && (
         <SubgroupToggler />
       )}
     </div>
@@ -166,14 +166,14 @@ function SectionToggler(props) {
   return (
     <div classNsme="SectionToggler" data-open={isSectionActive ? 'true' : 'false'}>
       {section.files &&
-        section.files.forEach((file, fileIndex) => {
+        section.files.map((file, fileIndex) => {
           const subgroup = file.files ? file.files : null;
           let compare = file.folder && file.indexFile
             ? `${file.folder}/${file.indexFile}`
             : `${section.folder}/${file}`;
           const isFileActive = currentFile === compare;
           return (
-            <Indexer />
+            <Indexer key={`file-${fileIndex}`}/>
           )
         })}
     </div>
@@ -189,7 +189,7 @@ function GetLink(props) {
       className={isSectionActive ? 'docSearch-lvl0' : ''}
       isActive={isSectionActive}
     >
-      {sectionTitle}
+      {props.sectionTitle}
     </a>
   )
 }
