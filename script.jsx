@@ -79,36 +79,23 @@ export default class SidebarMenu extends React.Component {
     }
   }
 
+  includes(array, folder) {
+    let flag = false;
+    array.forEach(elem => {
+      if (`${folder}/${elem}` === this.props.currentFile) {
+        flag = true;
+      }
+    })
+    return flag;
+  }
+
   render() {
-    let self = this;
-    function includes(array, folder) {
-      let flag = false;
-      array.forEach(elem => {
-        if (`${folder}/${elem}` === self.props.currentFile) {
-          flag = true;
-        }
-      })
-      return flag;
-    }
     const { sidebar, currentSection, currentFile, onSectionSelect, getLinkHref } = this.props;
 
-    return !this.state.loading ? (
+    return !this.state.loading ? (//Вопрос актуальности прелоадера остается открыт
       <Menu id='sidebar-menu'>
         <Sections>
-          <SectionLinks>
-            {sidebar.map((section, index) => {
-              const isSectionActive = currentSection === index;
-              let sectionTitle = section.name
-                ? section.name
-                : this.getName(section.labels, section.folder, section.indexFile);
-              return (
-                <div key={index}>
-                  <GetLink />
-                  <SectionToggler />
-                </div>
-              )
-            })}
-          </SectionLinks>
+          <SectionLinks />
         </Sections>
         <OnlyDesktop>
           <SideFooter>
@@ -118,17 +105,7 @@ export default class SidebarMenu extends React.Component {
       </Menu>
     ) : (
         <Menu id='sidebar-menu'>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              flexDirection: 'column',
-              margin: '44px 34px 0 0'
-            }}
-          >
-            <Preloader size={24} />
-          </div>
+          <PreloadSection />
         </Menu>
       )
   }
@@ -173,7 +150,7 @@ function SectionToggler(props) {
             : `${section.folder}/${file}`;
           const isFileActive = currentFile === compare;
           return (
-            <Indexer key={`file-${fileIndex}`}/>
+            <Indexer key={`file-${fileIndex}`} />
           )
         })}
     </div>
@@ -191,6 +168,39 @@ function GetLink(props) {
     >
       {props.sectionTitle}
     </a>
+  )
+}
+
+function SectionLinks(props) {
+  {
+    sidebar.map((section, index) => {
+      const isSectionActive = props.currentSection === index;
+      let sectionTitle = section.name
+        ? section.name
+        : this.getName(section.labels, section.folder, section.indexFile);
+      return (
+        <div key={index}>
+          <GetLink />
+          <SectionToggler />
+        </div>
+      )
+    })
+  }
+}
+
+function PreloadSection() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        margin: '44px 34px 0 0'
+      }}
+    >
+      <Preloader size={24} />
+    </div>
   )
 }
 
